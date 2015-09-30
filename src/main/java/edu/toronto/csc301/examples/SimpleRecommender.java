@@ -16,7 +16,11 @@ public class SimpleRecommender implements Recommender {
 	@Override
 	public List<User> recommendPotentialFollowees(User targetUser) {
 		Objects.requireNonNull(targetUser);
-		return userToPotentialFollowees.getOrDefault(targetUser, Collections.emptyList());
+		return Collections.unmodifiableList(
+				userToPotentialFollowees.getOrDefault(
+						targetUser, Collections.emptyList()
+				)
+		);
 	}
 	
 	
