@@ -1,10 +1,10 @@
 package edu.toronto.csc301.examples;
 
-import java.util.List;
+import java.util.Iterator;
 
 public interface Recommender {
 
 	
-	List<User> recommendPotentialFollowees(User targetUser);
+	Iterator<User> recommendPotentialFollowees(User targetUser);
 	
 }

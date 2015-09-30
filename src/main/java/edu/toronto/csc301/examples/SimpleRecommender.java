@@ -3,6 +3,7 @@ package edu.toronto.csc301.examples;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -14,11 +15,10 @@ public class SimpleRecommender implements Recommender {
 	
 	
 	@Override
-	public List<User> recommendPotentialFollowees(User targetUser) {
+	public Iterator<User> recommendPotentialFollowees(User targetUser) {
 		Objects.requireNonNull(targetUser);
-		return new ArrayList<User>(
-				userToPotentialFollowees.getOrDefault(targetUser, Collections.emptyList())
-		);
+		return userToPotentialFollowees.getOrDefault(
+				targetUser, Collections.emptyList()).iterator();
 	}
 	
 	

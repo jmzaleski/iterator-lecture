@@ -1,6 +1,6 @@
 import static org.junit.Assert.*;
 
-import java.util.List;
+import java.util.Iterator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class SimpleRecommenderTest {
 	
 	@Test
 	public void testEmptyRecommender() {
-		assertEquals(0, recommender.recommendPotentialFollowees(testUsers[0]).size());
+		assertFalse(recommender.recommendPotentialFollowees(testUsers[0]).hasNext());
 	}
 	
 	@Test(expected=NullPointerException.class)
@@ -52,10 +52,11 @@ public class SimpleRecommenderTest {
 		
 		recommender.addPotentialFollowee(targetUser , potentialFollowee);
 		
-		List<User> result = recommender.recommendPotentialFollowees(targetUser);
+		Iterator<User> result = recommender.recommendPotentialFollowees(targetUser);
 		
-		assertEquals(1, result.size());
-		assertEquals(potentialFollowee, result.get(0));
+		assertTrue(result.hasNext());
+		assertEquals(potentialFollowee, result.next());
+		assertFalse(result.hasNext());
 	}
 	
 	
@@ -70,12 +71,15 @@ public class SimpleRecommenderTest {
 		recommender.addPotentialFollowee(targetUser , potentialFollowee2);
 		recommender.addPotentialFollowee(targetUser , potentialFollowee3);
 		
-		List<User> result = recommender.recommendPotentialFollowees(targetUser);
+		Iterator<User> result = recommender.recommendPotentialFollowees(targetUser);
 		
-		assertEquals(3, result.size());
-		assertEquals(potentialFollowee1, result.get(0));
-		assertEquals(potentialFollowee2, result.get(1));
-		assertEquals(potentialFollowee3, result.get(2));
+		assertTrue(result.hasNext());
+		assertEquals(potentialFollowee1, result.next());
+		assertTrue(result.hasNext());
+		assertEquals(potentialFollowee2, result.next());
+		assertTrue(result.hasNext());
+		assertEquals(potentialFollowee3, result.next());
+		assertFalse(result.hasNext());
 	}
 	
 	
@@ -87,7 +91,7 @@ public class SimpleRecommenderTest {
 		recommender.addPotentialFollowee(targetUser , potentialFollowee);
 		recommender.removePotentialFollowee(targetUser, potentialFollowee);
 		
-		assertEquals(0, recommender.recommendPotentialFollowees(targetUser).size());
+		assertFalse(recommender.recommendPotentialFollowees(targetUser).hasNext());
 	}
 	
 	
