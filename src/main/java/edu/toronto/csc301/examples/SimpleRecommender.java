@@ -1,13 +1,14 @@
 package edu.toronto.csc301.examples;
 
 import java.util.List;
+import java.util.Objects;
 
 public class SimpleRecommender implements Recommender {
 
 
 	@Override
 	public List<User> recommendPotentialFollowees(User targetUser) {
-		// TODO: Implement
+		Objects.requireNonNull(targetUser);
 		return null;
 	}
 	
