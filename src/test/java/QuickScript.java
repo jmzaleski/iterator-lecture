@@ -1,8 +1,8 @@
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import edu.toronto.csc301.examples.FilteringIterator;
 import edu.toronto.csc301.examples.Recommender;
 import edu.toronto.csc301.examples.SimpleRecommender;
 import edu.toronto.csc301.examples.User;
@@ -34,17 +34,14 @@ public class QuickScript {
 			
 			// Get an iterator of recommended users
 			Iterator<User> recommendation = r.recommendPotentialFollowees(targetUser);
-			// Get all elements into a list
+			
+			// Wrap it in another iterator that selects 3 arbitrary items
+			recommendation = new FilteringIterator<User>(recommendation, 3);
+			
+			// Now, get all the elements into a list and print the list
 			List<User> potentialFollowees = new ArrayList<User>();
 			while (recommendation.hasNext()) {
 				potentialFollowees.add(recommendation.next());
-			}
-			
-			// Shuffle ...
-			Collections.shuffle(potentialFollowees);
-			// Keep only the first 3 users
-			while(potentialFollowees.size() > 3){
-				potentialFollowees.remove(0);
 			}
 			System.out.println("  " + potentialFollowees);
 		}
