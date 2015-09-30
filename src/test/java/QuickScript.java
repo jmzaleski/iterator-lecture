@@ -1,4 +1,7 @@
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import edu.toronto.csc301.examples.Recommender;
 import edu.toronto.csc301.examples.SimpleRecommender;
@@ -19,9 +22,7 @@ public class QuickScript {
 	
 	
 	
-	
 
-	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		
 		Recommender r = createRecommender();
@@ -31,11 +32,21 @@ public class QuickScript {
 		for (int i = 1; i < 6; i++) {
 			System.out.println("Recommendation " + i);
 			
-			// Get a list of recommended user
+			// Get an iterator of recommended users
 			Iterator<User> recommendation = r.recommendPotentialFollowees(targetUser);
+			// Get all elements into a list
+			List<User> potentialFollowees = new ArrayList<User>();
+			while (recommendation.hasNext()) {
+				potentialFollowees.add(recommendation.next());
+			}
 			
-			// Need to get 3 arbitrary users from the iterator ...
-			System.out.println("  Not implemented   )-:");
+			// Shuffle ...
+			Collections.shuffle(potentialFollowees);
+			// Keep only the first 3 users
+			while(potentialFollowees.size() > 3){
+				potentialFollowees.remove(0);
+			}
+			System.out.println("  " + potentialFollowees);
 		}
 		
 	}
