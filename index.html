@@ -33,7 +33,7 @@ Since we only have 500 users, we don't need anything fancy for this week, we jus
 </ul>
 
 <h2>
-<a id="first-step" class="anchor" href="#first-step" aria-hidden="true"><span class="octicon octicon-link"></span></a>First step</h2>
+<a id="step-1" class="anchor" href="#step-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 1</h2>
 
 <p>You start by creating "the skeleton":</p>
 
@@ -55,7 +55,104 @@ Since we only have 500 users, we don't need anything fancy for this week, we jus
 </li>
 </ul>
 
-<p>For more details, <a href="https://github.com/csc301-fall-2015/iterator-lecture/tree/7bc8abbf0192f34f22ce6f988fc9c2a28fbd2503">browse the source code</a>.</p>
+<p>For more details, <a href="https://github.com/csc301-fall-2015/iterator-lecture/tree/7bc8abbf0192f34f22ce6f988fc9c2a28fbd2503">browse the source code on GitHub</a>, or run <code>git checkout 7bc8abbf01</code> on your local clone.</p>
+
+<h2>
+<a id="step-2" class="anchor" href="#step-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 2</h2>
+
+<p>Next, you implement the <code>SimpleRecommender</code>.<br>
+<a href="https://github.com/csc301-fall-2015/iterator-lecture/tree/1d217a09b2106b2dea8811aae7ebcaccb28eb6d4">browse the source code on GitHub</a>, or run <code>git checkout 1d217a09b</code> on your local clone.</p>
+
+<p>At the point, your teammate joins you and reviews your code.
+She notices a potential problem with your code ...</p>
+
+<h2>
+<a id="step-3" class="anchor" href="#step-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 3</h2>
+
+<p>Your teammate decides to "keep things interesting for our users" - 
+She wants to display a (possibly) different recommendation every time the users uses the app.</p>
+
+<p>She decides to write a quick script that:</p>
+
+<ul>
+<li>Uses your <code>SimpleRecommender</code>
+</li>
+<li>Sets up a user with 20 recommended potential followees</li>
+<li>The script does the following a few times, in a loop:
+
+<ul>
+<li>Get the recommended potential followees</li>
+<li>Shuffle the list</li>
+<li>Keep only the first 3 users</li>
+</ul>
+</li>
+</ul>
+
+<p>You can see the script <a href="https://github.com/csc301-fall-2015/iterator-lecture/blob/d109bacdf4641d4025209d651628ac0069101fdf/src/test/java/QuickScript.java">here</a>.</p>
+
+<p>The script exposes a problem ... it accidentally messed up the SimpleRecommender's internal data structure.</p>
+
+<h4>
+<a id="fix-1" class="anchor" href="#fix-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fix 1</h4>
+
+<p>You fix the problem <a href="https://github.com/csc301-fall-2015/iterator-lecture/commit/989ce2a1b53d7ba7685299e51c8904539fe8f5e0">by returning an unmodifiable list</a>.</p>
+
+<p>But, this change breaks our script, because the script wants to change the returned list.</p>
+
+<h4>
+<a id="fix-2" class="anchor" href="#fix-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fix 2</h4>
+
+<p>OK, you fix the problem by <a href="https://github.com/csc301-fall-2015/iterator-lecture/commit/877decc40ee671f86a0c76ba9da9cc84393cce85">returning a copy of the list</a>.</p>
+
+<h2>
+<a id="step-4" class="anchor" href="#step-4" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 4</h2>
+
+<p>You talk to your colleague again, and she notices that your recommender is slightly inefficient in terms of memory use - Every time somebody asks for a recommendation, it creates a copy of a list.</p>
+
+<p>Your colleague reminds you about the <a href="https://en.wikipedia.org/wiki/Iterator_pattern">Iterator</a> design pattern, which can be useful in our case.</p>
+
+<p>You follow your colleague's advice and change the <code>Recommender</code> interface to use an iterator, instead of a list.</p>
+
+<p><a href="https://github.com/csc301-fall-2015/iterator-lecture/tree/9d75fa559b8d656ebac64004fc21be85e2fa37ea">browse the source code on GitHub</a>, or run <code>git checkout 9d75fa559b</code> on your local clone.</p>
+
+<p>Next, you also update <a href="https://github.com/csc301-fall-2015/iterator-lecture/blob/e46658e733f26dd28b7f89c2eb940b85782c4713/src/test/java/QuickScript.java">the script</a> (that selects an arbitrary subset of 3 potential followees) to use an iterator instead of a list.</p>
+
+<h2>
+<a id="step-5" class="anchor" href="#step-5" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 5</h2>
+
+<p>We start recommending potential followees using code similar to your script.</p>
+
+<p>After a while, we revisit the code and realize it's inefficient, in terms of memory use - 
+In order to recommend potential users, we:</p>
+
+<ol>
+<li>Get an iterator of users from a recommender</li>
+<li>Get all the users out of the iterator and into a list</li>
+<li>Shuffle the list and keep only the first 3 users</li>
+</ol>
+
+<p>Now that our product is successful and has many users, this is becoming a problem ...</p>
+
+<ul>
+<li>Our new recommenders return iterators with thousands of potential followees.</li>
+<li>We create in-memory lists from all of these items, although we end up using only 3 users from each list.</li>
+<li>These lists waste memory and kick-off garbage collection which impacts the performance of our system.</li>
+</ul>
+
+<p>You team-lead asks you to fix it. To be a bit more formal, your task is:</p>
+
+<ul>
+<li>Given an iterator with n items (where n is large), create an iterator with k items (where k is a small constant)
+
+<ul>
+<li>The items should come from the underlying iterator</li>
+<li>The items should be chosen randomly (more or less)</li>
+<li>Use O(k) memory</li>
+</ul>
+</li>
+</ul>
+
+<p>You implement a new, slightly more sophisticated <a href="https://github.com/csc301-fall-2015/iterator-lecture/blob/27d642447c266d3fe68fd452a37da22cfcb8d462/src/main/java/edu/toronto/csc301/examples/FilteringIterator.java">filtering iterator</a> that selects k "random" items from an underlying iterator.</p>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/csc301-fall-2015/iterator-lecture">Code Example - Iterator</a> is maintained by <a href="https://github.com/csc301-fall-2015">csc301-fall-2015</a>.</span>
